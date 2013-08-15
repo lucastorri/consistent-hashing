@@ -8,13 +8,14 @@ case class Node[Key, Value](id: Int) {
 
     private[Node] val hash = mutable.HashMap[Key, Value]()
 
-    def clear = {
+    def clear() = {
         val old = hash.clone
         hash.clear
         old
     }
 
-    def update(k: Key, v: Value) = hash(k) = v
+    def update(k: Key, v: Value) = 
+        hash(k) = v
 
     def -(k: Key) : (Key, Value) = {
         val v = hash(k)
@@ -22,7 +23,8 @@ case class Node[Key, Value](id: Int) {
         (k, v)
     }
 
-    override def hashCode = id
+    override def hashCode() = 
+        id
 
     override def equals(a: Any) = a match {
         case a: Node[Key, Value] => hash == a.hash
@@ -32,7 +34,8 @@ case class Node[Key, Value](id: Int) {
     def toMap() = 
         hash.toMap
 
-    override def toString = s"Node[${id}] = ${hash}"
+    override def toString() =
+        s"Node[${id}] = ${hash}"
 }
 object Node {
     def apply[Key, Value]() : Node[Key, Value] = apply[Key, Value](Random.nextInt)
@@ -50,7 +53,7 @@ class Ring[Key, Value](redundancy: Int) {
     def +(n: N) = {
         n.clear
         val nodes = nodesFor(n)
-        ring += ((n.hashCode, n))
+        ring += (n.hashCode -> n)
         rehash(nodes)
         this
     }
@@ -84,11 +87,17 @@ class Ring[Key, Value](redundancy: Int) {
 
     object client {
 
-        def -(k: Key) : Unit = nodesFor(k).map(n => n - (k))
+        def -(k: Key) : Unit = 
+            nodesFor(k).map(n => n - (k))
 
-        def update(k: Key, v: Value) : Unit = nodesFor(k).map(n => n(k) = v)
+        def update(k: Key, v: Value) : Unit = 
+            nodesFor(k).map(n => n(k) = v)
+
     }
 }
 object Ring {
-    def apply[Key, Value]() = new Ring[Key, Value]()
+    
+    def apply[Key, Value]() = 
+        new Ring[Key, Value]()
+
 }
